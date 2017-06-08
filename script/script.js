@@ -8,17 +8,19 @@ class Constellation{
 		this.star = config.star;
 		this.length = config.length;
 		this.stars = config.stars;
-		// this.Star = {
-			// th: this.__this,
-			// x: Math.floor(Math.random() * this.width),
-			// y: Math.floor(Math.random() * this.height),
-			// radius: +((Math.random() * this.star.width).toFixed(1)),
-			// create: function(arg){
-			// 	arg.context.beginPath();
-			// 	arg.context.arc(this.x, this.y, this.radius, 2*Math.PI, false);
-			// 	arg.context.fill();
-			// }
-		// };
+		this.Star = function(arg){ // пушим новый объект для каждой звезды с генерац.индивид.параметров
+				this.x = Math.floor(Math.random() * arg.width), // координаты
+				this.y = Math.floor(Math.random() * arg.height),
+				this.vx = ((0.5 - Math.random())/5).toFixed(2), //скорость (для ее уменьшения /5)
+				this.vy = ((0.5 - Math.random())/5).toFixed(2),
+				this.radius = +((Math.random() * arg.star.width).toFixed(1)),
+				this.create = function(arg){
+					// arg.context.clearRect(0, 0, arg.canvas.width, arg.canvas.height);
+					arg.context.beginPath();
+					arg.context.arc(this.x, this.y, this.radius, 2*Math.PI, false);
+					arg.context.fill();
+				}
+			};
 		this._setCanvas();
 		this._setContext();
 		this._createStars();
@@ -36,62 +38,37 @@ class Constellation{
 	};
 
 	_createStars(){
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		// this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		for(let i = 0; i < this.length; i++){
-			this.stars.push({ // пушим новый объект для каждой звезды с генерац.индивид.параметров
-				x: Math.floor(Math.random() * this.width), // координаты
-				y: Math.floor(Math.random() * this.height),
-				vx: ((0.5 - Math.random())/5).toFixed(2), //скорость (для ее уменьшения /5)
-				vy: ((0.5 - Math.random())/5).toFixed(2),
-				radius: +((Math.random() * this.star.width).toFixed(1)),
-				create: function(arg){
-					// console.log(this)
-					// arg.context.clearRect(0, 0, this.x-this.radius, this.y-this.radius);
-					arg.context.beginPath();
-					arg.context.arc(this.x, this.y, this.radius, 2*Math.PI, false);
-					arg.context.fill();
-				},
-				animate: function(star, constel){
-					// constel.context.clearRect(this.x-this.radius, this.y-this.radius*2, this.x+this.radius, this.y+this.radius);
-					let x = star.x;
-					let y = star.y;
-					let vx = +star.vx;
-					let vy = +star.vy;
-					let radius = star.radius;
-					let canvasW = constel.canvas.width;
-					let canvasH = constel.canvas.height;
-					let context = constel.context;
-					let flagW = true;
-					let flagH = true;
-					if(flagW){
-						++x
-					}
-					console.log(this.top)
-					this.x = x;
-					this.y = y;
-					this.create(constel)
-					// console.log(this)
-					
-				}
-			});
-			this.stars[i].create(this);
+			// console.log(this.length)
+			// this.length
+			this.stars.push(new this.Star(this.__this));
+			this.stars[i].create(this); 
+			let st = this.stars[i]
+			this._animate(st)
 		};
-		this._animate();
+		// this._animate();
 	};
 
-	_animate(){
-		let constel = this;
-		let stars = this.stars
-		let w = this.canvas.width;
-		let h = this.canvas.height;
-
-		console.log("anim");
+	_animate(arg){
+		// console.log(arg);
+		let th = this
+		let star = arg;
+		let x = star.x;
+		// console.log(this.canvas.width)
+		let flag = true
+		// this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		setInterval(function(){
-			for(let i = 0; i<stars.length; i++){
-				stars[i].animate(stars[i], constel);
+			// th.context.clearRect(star.x-star.radius, star.y-star.radius, star.x+star.radius, star.y+star.radius);
+			// th.context.clearRect(0, 0, th.canvas.width, th.canvas.height);
+			console.log(star)
+			if(flag == true){
+				++x;
 			}
-		}, 50)
-	}
+			star.x = x;
+			star.create(th);
+		}, 80)
+	};
 
 
 	_check(){
@@ -120,3 +97,7 @@ const config = {
 
 document.addEventListener('DOMContentLoaded', ()=>{var c = new Constellation(config);});
 // var s = new Star(config);
+
+
+
+//http://domenart-blog.ru/kategorii/programmirovanie/javascript/322-animacziya-sozvezdie
